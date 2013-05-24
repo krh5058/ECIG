@@ -1,0 +1,14 @@
+seq,1,seq,1,seq,2,seq,2
+run,1,run,2,run,1,run,2
+fix,0,fix,0,fix,0,fix,0
+cig9.mov,4,cig2.mov,4,cig8.mov,4,brush8.mov,4
+fix,34,fix,34,fix,34,fix,34
+brush3.mov,48,brush9.mov,50,brush11.mov,48,cig5.mov,50
+fix,78,fix,80,fix,78,fix,80
+cig4.mov,96,brush4.mov,94,brush5.mov,96,brush12.mov,94
+fix,126,fix,124,fix,126,fix,124
+brush7.mov,142,cig3.mov,142,cig12.mov,142,cig11.mov,142
+fix,172,fix,172,fix,172,fix,172
+brush2.mov,188,cig7.mov,186,brush10.mov,188,cig10.mov,186
+fix,218,fix,216,fix,218,fix,216
+end,232,end,232,end,232,end,232
