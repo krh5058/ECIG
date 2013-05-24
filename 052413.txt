@@ -1,0 +1,180 @@
+ECIG
+As requested by Travis Nichols
+5/24/13
+
+Author: Ken Hwang
+SLEIC, PSU
+
+------------------------------
+Updates:
+
+5/9/13 krh
+	dispset:
+            oldVisualDebugLevel = Screen('Preference', 'VisualDebugLevel',0);
+            oldOverrideMultimediaEngine = Screen('Preference', 'OverrideMultimediaEngine', 1);
+5/10/13
+	Added pres class.  Instantiated as p_obj in ecig.m.
+	Added methods addl, tset, and cycle to class main.
+	Modified ecig.m for additional object handling.
+	Moved keys and function handles to pres class.
+	Added Observable properties to main.
+	Added events to main.
+	Encountered issue with while loop with an open window.  Verbosity reports winproc paint/size executions even when no Screen functions are executed.
+
+5/15/13
+	pres.m > videoload, added break if texture not loaded
+	GStreamer framework installed on Projector PC
+
+5/24/13
+	Added fix_color to pres class properties (transferred over through "dat" in main class)
+	Added abort to pres class Observable properties
+	Added listener for "abort" to main class in addl().  Added abortcycle() method to main class.
+	Fixed blank cell in t_default.csv
+	Modified ShowHideWinTaskbarMex to ShowHideFullWinTaskbarMex to hide Windows Start button as well.  Added to bin/
+	Added triggering option to GUI.
+	Added triggering and cycle formatting to ecig.m
+
+------------------------------
+
+Package contents --
+
+1) Package essentials: ./bin/
+	- Timing and presentation file: t_default.csv
+	- Class file: main.m
+	- Header information for timing and presentation file: head_default.mat
+2) Video directory: ./content/
+3) Output directory: ./out/
+4) Primary call script: ecig.m
+5) Dated ReadMe file
+
+Usage instructions and general details--
+
+****
+****
+****
+
+
+Primary script details --
+
+ecig.m
+-Initializes directory structure
+-Initializes object of class main and class pres.
+-Initializes PsychToolBox window
+-Executes obj.videoload()
+-Hides desktop taskbar, start button, mouse cursor, and restricts keyboard input.
+-Executes triggering
+-Loops through main.cycle(), by run
+
+Class definition details --
+
+main.m
+-Properties: exec, monitor, path, exp, movie, temp_t, abort, mov, dat (Observable)
+-Events: fix, playback, txt
+-Static Methods: disp
+-Methods: main (constructor), pathset, expset, videoload, addl, tset, abortcycle, cycle
+
+Properties (main):
+- exec is set to default and is a placeholder in case of other run modes
+- monitor stores all display-related information, primarily driven from PsychToolbox.  Populated by 'disp'.
+- path is the path directory structure, stored as strings.  Requires directory root and sub-directory list.  Populated by 'pathset'.
+- exp are experimental parameters including: presentation structure and timing, subject info, function handles for easy-access screen presentation, TR, iPAT, disdaq period, and relevant text.  Populated by 'expset'.
+- movie is a structure that contains movie information, such as movieptr, count, and name.
+- temp_t is the temporary onset value (computer time).  This value is modified by tset
+- abort is set at a default of 0.  Corresponds with lh2 listener to listen to the "abort" property in pres class.
+- mov is a cell array of movie names in the order it was loaded.  This is populated by videoload.
+- dat (Observable) is a general data structure for transferring values from objects of class main to class pres.  pres.propset() is the callback function to populate object instances of class pres upon changes to 'dat'.
+
+Events (main):
+- fix notifies a listener handle (lh1) in objects of class pres, which executes method dispfix().
+- playback notifies a listener handle (lh2) in objects of class pres, which executes method videoplayback().
+- txt notifies a listener handle (lh3) in objects of class pres, which executes method disptxt().
+
+Methods (main):
+main (constructor)
+	- Requires directory root and sub-directory list.  Executes pathset, disp, and expset.
+
+pathset
+	- Requires directory root and sub-directory list.  Populates 'path' properties for object instance of class main.  Path properties are strings associated with the sub-directory list.
+
+disp
+	- Populates 'monitor' properties.  Largely driven by PsychToolbox related screen-handling functions.  This method is static.
+	- VisualDebugLevel is turned to 0.  Slight differences in beam position queries and reported refresh rate can cause warnings about synchronization issues.  However, movie presentations at 23 fps does not warrant exact precision.
+	- OverrideMultimediaEngine set to 1.  Forces GStreamer rather than QuickTime media handling.
+
+expset
+	- Loads header and timing information from bin/.
+	- Parses header information into 'seq' and 'run' categories.
+	- Indexes field .pres and .t according to the header information.  Saves as exp.build.
+	- Queries subject info
+	- Initializes disdaq timing for manual triggering, and related text information.
+	- Sets movie maximum time to 30s.
+	- All data is populated into the 'exp' property.
+
+videoload
+	- Loads all videos in 'content' directory with Screen('OpenMovie')
+	- Requires content path set and an open window.
+	- Populates'movie' and 'mov' properties.
+
+addl
+	- Adds a listener for 'temp_t' property under condition 'PostSet'.
+	- Executes tset.
+
+tset
+	- Takes the value 'temp_t' property and refreshes the current 'temp_t' property of class main.
+
+abortcycle
+	- Takes the value 'abort' property and refreshes the current 'abort' property of class main.
+
+cycle
+	- Determines start time.
+	- Initiates an iterator for cycle through presentation events.
+	- While loop to cycle at maximum Matlab processing rate.
+	- Each loop uses 'toc' to determine current time.
+	- If the integer value of 'toc' matches that of the requested onset time, the associated presentation event is handled.  After the handling event, the presentation iterator is added upon, so only the first iteration of the integer value is handled.
+	- Handling events are depending on the string representing the presentation event: 'end' aborts the while loop, 'fix' notifies event 'fix', and a regexp string match of '.mov' notifies event 'playback'.
+	- Screen is cleared after loop is finished.
+
+Class definition details --
+
+pres.m
+-Properties: movie, txt, misc, keys, lh, temp_t (Observable), abort (Observable)
+-Methods: pres (constructor), dispfix, videoplayback, disptxt, and propset
+
+Properties (main):
+- movie is a property expecting the structure field of only 1 movie.  Utilized by videoplayback().
+- txt is a property expecting a string for disptxt().
+- misc contains function handles for fixation and text display
+- keys contains key press mapping.
+- lh contains listener handles.
+- temp_t is an Observable property that is filled by methods dispfix, videoplayback, and disptxt, which represents the start of any of these presentations.
+
+	- Creates function handles for fixation cross placement and text display (centered).  Both are set according to monitor.white. 	- Escape key stored.
+
+Methods (main):
+pres (constructor)
+	- Requires a 'src' object of class main.
+	- Creates function handles, key mapping, listeners, and stores properties to an object instance of class pres.
+
+dispfix
+	- Utilizes fixation display function handles to display a fixation cross.
+	- Stores onset to temp_t.
+	- Corresponds to lh1.
+
+videoplayback
+	- Opens movie from movie property.
+	- Stores onset of movie to temp_t
+	- Iterates through movie images.
+	- Stops playback if it reaches maximum movie duration (30s).
+	- Stops playback if Escape key is pressed, by modifying 'abort' property.
+	- Corresponds to lh2.
+
+disptxt
+	- Utilizes text display function handles to display a text to screen.
+	- Stores onset to temp_t.
+	- Corresponds to lh3.
+
+propset
+	- Is executed upon any changes to property 'dat' in objects of class 'main'.
+	- Reads all fields of 'dat' and replaces corresponding object properties.  This is necessary to transfer the current movie and text data to objects of class pres.
+	- Corresponds to lh4.
+
