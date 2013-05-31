@@ -273,6 +273,8 @@ classdef main < handle
             exp.movie_t = 30;
             exp.intro = 'Please wait for a moment....';
             exp.wait = 'Waiting for trigger....';
+            
+            exp.f_out = [exp.subjinfo '_' int2str(exp.seq) '.csv'];
 
             fprintf('main.m (expset): Storing experimental properties.\n');
             obj.exp = exp;
@@ -320,17 +322,20 @@ classdef main < handle
             t0 = GetSecs;
             tic;
             i = 1;
+            
+            fid = fopen([obj.path.out filesep obj.exp.f_out],'a');
+            fprintf(fid,'%s,%s,%s\r','Event','Scheduled','Reported');
+            
             evt = obj.exp.build.seq(obj.exp.seq).run(run).pres{i};
             t = obj.exp.build.seq(obj.exp.seq).run(run).t{i};
             
             while ~obj.abort
-                
                 tnow = regexp(num2str(toc),'\d{1,3}','match','once'); % String conversion of time
                 
                 if strcmp(tnow,t) % As long as the integer matches
-                    disp(evt) % Temp event
-                    disp(t) % Temp declared start time
-                    disp(tnow) % Temp reported current time
+%                     disp(evt) % Temp event
+%                     disp(t) % Temp declared start time
+%                     disp(tnow) % Temp reported current time
                     if strcmp(evt,'end')
                         break;
                     elseif strcmp(evt,'fix')
@@ -341,15 +346,18 @@ classdef main < handle
                     else
                         break;
                     end
-                    disp(obj.temp_t - t0) % Temp reported start time.
+%                     disp(obj.temp_t - t0) % Temp reported start time.
                     i = i + 1; % ***Essential to prevent racing notifications
+                    
+                    fprintf(fid,'%s,%s,%s\r',evt,t,num2str(obj.temp_t - t0));
                     
                     % Find next event and start time
                     evt = obj.exp.build.seq(obj.exp.seq).run(run).pres{i};
                     t = obj.exp.build.seq(obj.exp.seq).run(run).t{i};
                 end
             end
-                
+            
+            fclose(fid);
             Screen('Flip',obj.monitor.w); % Clear screen.
         end
         

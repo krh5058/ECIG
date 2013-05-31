@@ -1,6 +1,6 @@
 ECIG
 As requested by Travis Nichols
-5/24/13
+5/31/13
 
 Author: Ken Hwang
 SLEIC, PSU
@@ -33,6 +33,11 @@ Updates:
 	Modified ShowHideWinTaskbarMex to ShowHideFullWinTaskbarMex to hide Windows Start button as well.  Added to bin/
 	Added triggering option to GUI.
 	Added triggering and cycle formatting to ecig.m
+
+5/31/13
+	Added f_out to exp structure expset() in class main.m.
+	Added output logging in cycle() in class main.m.
+	ecig.m: Ignore hidden paths.
 
 ------------------------------
 
@@ -108,6 +113,7 @@ expset
 	- Queries subject info
 	- Initializes disdaq timing for manual triggering, and related text information.
 	- Sets movie maximum time to 30s.
+	- Set f_out, output name.
 	- All data is populated into the 'exp' property.
 
 videoload

@@ -21,7 +21,7 @@ try
     
     p = mfilename('fullpath');
     [ext,~,~] = fileparts(p);
-    [~,d] = system(['dir /ad/b ' ext]);
+    [~,d] = system(['dir /ad-h/b ' ext]);
     d = regexp(strtrim(d),'\n','split');
     cellfun(@(y)(addpath([ext filesep y])),d);
     fprintf('ecig.m: Directory initialization success!.\n')
@@ -61,8 +61,8 @@ catch ME
 end
 
 fprintf('ecig.m: Beginning presentation sequence...\n')
-% ListenChar(2);
-% HideCursor;
+ListenChar(2);
+HideCursor;
 ShowHideFullWinTaskbarMex(0);
 
 % Wait for instructions
@@ -103,8 +103,8 @@ end
 % fprintf('\nAgeBias: Finished presentation sequence ...\n')
 
 % Clean up
-% ListenChar(0);
-% ShowCursor;
+ListenChar(0);
+ShowCursor;
 ShowHideFullWinTaskbarMex(1);
 Screen('Preference','VisualDebugLevel',obj.monitor.oldVisualDebugLevel);
 Screen('Preference','VisualDebugLevel',obj.monitor.oldOverrideMultimediaEngine);
