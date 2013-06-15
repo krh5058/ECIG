@@ -1,6 +1,6 @@
 ECIG
 As requested by Travis Nichols
-5/31/13
+6/15/13
 
 Author: Ken Hwang
 SLEIC, PSU
@@ -38,6 +38,9 @@ Updates:
 	Added f_out to exp structure expset() in class main.m.
 	Added output logging in cycle() in class main.m.
 	ecig.m: Ignore hidden paths.
+
+6/15/13
+	Added SkipRun to expset UI, will skip to Run 2 if "1".
 
 ------------------------------
 
@@ -114,6 +117,7 @@ expset
 	- Initializes disdaq timing for manual triggering, and related text information.
 	- Sets movie maximum time to 30s.
 	- Set f_out, output name.
+	- Asks for SkipRun
 	- All data is populated into the 'exp' property.
 
 videoload

@@ -1,3 +1,5 @@
+function ecig
+
 % ECIG
 % As requested by Travis Nichols
 % 5/5/13
@@ -71,7 +73,13 @@ obj.dat.txt = obj.exp.intro;
 notify(obj,'txt');
 KbStrokeWait; % Spacebar to continue
 
-for i = 1:2
+if obj.exp.skip
+    ind = 2;
+else
+    ind = 1:2;
+end
+
+for i = ind
     
     % Triggering
     if obj.exp.trig % Auto-trigger
@@ -110,4 +118,4 @@ Screen('Preference','VisualDebugLevel',obj.monitor.oldVisualDebugLevel);
 Screen('Preference','VisualDebugLevel',obj.monitor.oldOverrideMultimediaEngine);
 Screen('CloseAll');
 
-
+end

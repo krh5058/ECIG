@@ -238,10 +238,10 @@ classdef main < handle
             
             % Miscellaneous
             % Query user: subject info
-            prompt={'Subject ID:', 'Sequence','Trigger'};
+            prompt={'Subject ID:', 'Sequence','Trigger','SkipRun'};
             name='Experiment Info';
             numlines=1;
-            defaultanswer={datestr(now,30),'1','1'};
+            defaultanswer={datestr(now,30),'1','1','0'};
             s=inputdlg(prompt,name,numlines,defaultanswer);
             if isempty(s)
                 error('User Cancelled.')
@@ -259,11 +259,19 @@ classdef main < handle
             end
             
             if isnan(str2double(s{3}))
-                error(['main.m (expset): Improper sequence value -- ' s{2}]);
+                error(['main.m (expset): Improper sequence value -- ' s{3}]);
             elseif ~any(str2double(s{3})==[0 1])
-                error(['main.m (expset): Sequence value must be 0 or 1 -- ' s{2}]);
+                error(['main.m (expset): Sequence value must be 0 or 1 -- ' s{3}]);
             else
                 exp.trig = str2double(s{3});
+            end
+            
+            if isnan(str2double(s{4}))
+                error(['main.m (expset): Improper sequence value -- ' s{4}]);
+            elseif ~any(str2double(s{3})==[0 1])
+                error(['main.m (expset): Sequence value must be 0 or 1 -- ' s{4}]);
+            else
+                exp.skip = str2double(s{4});
             end
             
             exp.TR = 2;
