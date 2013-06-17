@@ -282,7 +282,11 @@ classdef main < handle
             exp.intro = 'Please wait for a moment....';
             exp.wait = 'Waiting for trigger....';
             
-            exp.f_out = [exp.subjinfo '_' int2str(exp.seq) '.csv'];
+            if exp.skip
+                exp.f_out = [exp.subjinfo '_' int2str(exp.seq) '_skipped.csv'];
+            else
+                exp.f_out = [exp.subjinfo '_' int2str(exp.seq) '.csv'];
+            end
 
             fprintf('main.m (expset): Storing experimental properties.\n');
             obj.exp = exp;

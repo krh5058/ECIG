@@ -1,6 +1,6 @@
 ECIG
 As requested by Travis Nichols
-6/15/13
+6/17/13
 
 Author: Ken Hwang
 SLEIC, PSU
@@ -41,6 +41,9 @@ Updates:
 
 6/15/13
 	Added SkipRun to expset UI, will skip to Run 2 if "1".
+
+6/17/13
+	Added 'skipped' to output if SkipRun is used.
 
 ------------------------------
 
