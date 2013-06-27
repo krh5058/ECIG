@@ -108,8 +108,6 @@ for i = ind
     
 end
 
-% fprintf('\nAgeBias: Finished presentation sequence ...\n')
-
 % Clean up
 ListenChar(0);
 ShowCursor;
